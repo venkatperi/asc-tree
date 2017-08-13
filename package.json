@@ -1,6 +1,6 @@
 {
   "name": "asc-tree",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Returns a ASCII visualization of a tree ",
   "main": "dist/index.js",
   "scripts": {
