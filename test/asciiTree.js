@@ -53,6 +53,7 @@ let tree = null;
 describe( 'ascii tree', () => {
   it( 'root node', () => {
     tree = node( 'root' );
+    // console.log(asciiTree(tree))
     assert( asciiTree( tree ) === '└─root\n' );
   } );
 
@@ -60,6 +61,7 @@ describe( 'ascii tree', () => {
     tree = node( 'root' );
     node( 'a', tree );
     node( 'b', tree );
-    assert( asciiTree( tree ) === '└─root\n  ├─a\n  └─b\n' )
+    // console.log(asciiTree(tree))
+    assert.equal( asciiTree( tree ) , '└─root\n  ├─a\n  └─b\n' )
   } );
 } );

@@ -23,21 +23,49 @@
  * Returns a ASCII visualization of a tree starting at the
  * supplied node.
  * @param {Object} node - root of tree
- * @param {String} prefix - private
- * @param {Boolean} [isTail=true] - private
+ * @param {Object} opts - options
+ * @param {Function} opts.strings - strings to build the tree
+ * @param {Function} [opts.eol=process.EOL] - end of line
+ * @param {Function} opts.string - returns text representation of node
+ * @param {Function} opts.children - returns node's children as array
+ * @param {String} opts.prefix - private
+ * @param {Boolean} [opts.isTail=true] - private
  * @returns {String} - printable tree
  */
-function toAsciiTree( node, prefix = '', isTail = true ) {
+function toAsciiTree( node, opts ) {
+  opts = opts || {};
+  const prefix = opts.prefix || '';
+  const isTail = typeof opts.isTail === 'undefined' ?
+    true : opts.isTail;
+  const toString = opts.string || String;
+  const children = opts.children || function ( n ) {
+    return n.children || [];
+  };
+  const eol = opts.eol || '\n';
+  const strings = opts.strings || {
+    tail: '└─',
+    continuation: '├─',
+    prefix: {
+      tail: '  ',
+      continuation: '│ '
+    }
+  };
+
   return !node ? null : [
     prefix,
-    isTail ? '└─' : '├─',
-    String( node ),
-    '\n',
-  ].concat( (node.children || []).map(
-    ( c, i, arr ) => toAsciiTree(
-      c,
-      prefix + ( isTail ? '  ' : '│ ' ),
-      i >= arr.length - 1 ) ) )
+    isTail ? strings.tail : strings.continuation,
+    toString( node ),
+    eol
+  ].concat( (children( node ) || []).map(
+    ( c, i, arr ) => toAsciiTree( c, {
+      prefix: prefix + ( isTail ?
+        strings.prefix.tail :
+        strings.prefix.continuation),
+      isTail: i >= arr.length - 1,
+      string: opts.string,
+      children: opts.children,
+      strings: opts.strings
+    } ) ) )
     .join( '' );
 }
 
